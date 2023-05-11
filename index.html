@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Caesar Cipher</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div id="heading-container">
+        <h1>CAESAR CIPHER</h1>
+      </div>
+      <div id="main-container">
+        <div class="box">
+          <div class="heading">
+            <h2>Controls</h2>
+          </div>
+          <form method="post" action="/submit" id="controls">
+            <div class="row">
+              <div>
+                <input
+                  type="radio"
+                  name="operation"
+                  id="encode-radio"
+                  class="operation"
+                  value="encrypt"
+                  checked="checked"
+                /><label for="encode-radio">Encode</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  name="operation"
+                  id="decode-radio"
+                  class="operation"
+                  value="decrypt"
+                /><label for="decode-radio">Decode</label>
+              </div>
+            </div>
+            <div class="row">
+              <div>
+                <div>
+                  <span>Shift Key: </span>
+                  <input
+                    type="text"
+                    name="shiftValue"
+                    id="shiftValue"
+                    maxlength="3"
+                    size="4"
+                    value="1"
+                    pattern="-?[1-9]|[12][0-9]|3[0-6]"
+                    title="Enter a number between -36 and 36 (excluding 0)"
+                  />
+                </div>
+              </div>
+              <div>
+                <div>
+                  <span>Modulo: </span>
+                  <input
+                    type="text"
+                    name="moduloValue"
+                    id="moduloValue"
+                    maxlength="3"
+                    size="4"
+                    value="36"
+                    pattern="-?[1-9]|[12][0-9]|3[0-6]"
+                    title="Enter a number between -36 and 36 (excluding 0)"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div class="column">
+              <div><span>ALPHABET</span></div>
+              <div>
+                <input
+                  type="text"
+                  name="alphabet"
+                  id="alphabet-input"
+                  value="abcdefghijklmnopqrstuvwxyz0123456789"
+                  readonly
+                  oncopy="return false;"
+                />
+              </div>
+            </div>
+
+            <div class="row">
+              <div>
+                <div>FILE NAME</div>
+                <input
+                  type="text"
+                  name="filename"
+                  id="filename"
+                  value="filename.txt"
+                />
+              </div>
+              <div>
+                <div>FOREIGN CHARS</div>
+                <select name="foreignChars" id="foreignChars">
+                  <option value="remove">Remove</option>
+                  <option value="ignore">Ignore</option>
+                </select>
+              </div>
+            </div>
+            <input type="submit" name="submit" id="submit" value="Submit" />
+          </form>
+        </div>
+
+        <div class="box">
+          <div class="heading">
+            <h2 id="heading-input">File Text Content</h2>
+          </div>
+          <textarea
+          readonly
+            placeholder="Read text content of the file..."
+            rows="20"
+            id="file-text-context"
+          ></textarea>
+        </div>
+        <div class="box">
+          <div class="heading">
+            <h2 id="heading-output">File Text Output</h2>
+          </div>
+          <textarea
+            readonly
+            placeholder="Output..."
+            rows="20"
+            id="output-text"
+          ></textarea>
+          <b><p id="success-message"></p></b>
+          <p id="error-message"></p>
+        </div>
+      </div>
+    </div>
+    <script>
+      const queryParams = new URLSearchParams(window.location.search);
+      const successMessage = queryParams.get('success');
+      const errorMessage = queryParams.get('error');
+      // Set the content of the success message div
+      const outputTextArea = document.getElementById('output-text');
+      const fileContentTextArea = document.getElementById('file-text-context');
+      const errorMessageOutputText = document.getElementById('error-message');
+      const successMessageOutputText =
+        document.getElementById('success-message');
+
+      if (successMessage) {
+        // Display success message
+        successMessageOutputText.innerText = successMessage;
+        // Get the output value
+        outputTextArea.value = queryParams.get('outputValue') || '';
+        fileContentTextArea.value = queryParams.get('fileContentValue') || '';
+
+        // Set the values of the form inputs
+        const filenameInput = document.getElementById('filename');
+        filenameInput.value = queryParams.get('filename') || '';
+        const shiftValueInput = document.getElementById('shiftValue');
+        shiftValueInput.value = queryParams.get('shiftValue') || '';
+        const operationValue = queryParams.get('operation') || '';
+        const encodeRadio = document.getElementById('encode-radio');
+        const decodeRadio = document.getElementById('decode-radio');
+        if (operationValue === 'encrypt') {
+          encodeRadio.checked = true;
+        } else if (operationValue === 'decrypt') {
+          decodeRadio.checked = true;
+        }
+
+        const moduloValueInput = document.getElementById('moduloValue');
+        moduloValueInput.value = queryParams.get('moduloValue') || '';
+        const foreignCharsSelect = document.getElementById('foreignChars');
+        const foreignCharsValue = queryParams.get('foreignChars') || '';
+        for (let i = 0; i < foreignCharsSelect.options.length; i++) {
+          if (foreignCharsSelect.options[i].value === foreignCharsValue) {
+            foreignCharsSelect.selectedIndex = i;
+            break;
+          }
+        }
+      }
+      if (errorMessage) {
+        errorMessageOutputText.innerText = errorMessage;
+      }
+    </script>
+  </body>
+</html>
